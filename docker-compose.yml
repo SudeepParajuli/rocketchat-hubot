@@ -1,0 +1,30 @@
+# setting the chatbot for cloudfactory test 
+hubot:
+  image: rocketchat/hubot-rocketchat
+  environment:
+    - ROCKETCHAT_URL=127.0.0.1:3000
+    - ROCKETCHAT_ROOM=GENERAL
+    - ROCKETCHAT_USER=test
+    - ROCKETCHAT_PASSWORD=test123
+    - EXTERNAL_SCRIPT=hubot-help,hubot-seen,hubot-links,hubot-diagnostics
+  links:
+    - rocketchat:rocketchat
+  ports:
+    - 3001:8080
+
+mongo:
+  image: mongo
+  command: mongod 
+  volumes:
+    - ./data/runtime/db:/data/db
+    - ./data/dump:/dump
+
+rocketchat:
+  image: rocketchat/rocket.chat:latest
+  environment:
+    - PORT=3000
+    - ROOT_URL=http://localhost:3000
+  links:
+    - mongo:mongo
+  ports:
+    - 3000:3000
